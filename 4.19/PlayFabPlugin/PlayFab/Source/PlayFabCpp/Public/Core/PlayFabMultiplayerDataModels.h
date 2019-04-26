@@ -367,7 +367,7 @@ namespace MultiplayerModels
         // [optional] The entity key of the player whose tickets should be canceled.
         TSharedPtr<FEntityKey> Entity;
 
-        // The Id of the queue from which a player's tickets should be canceled.
+        // The name of the queue from which a player's tickets should be canceled.
         FString QueueName;
 
         FCancelAllMatchmakingTicketsForPlayerRequest() :
@@ -427,7 +427,7 @@ namespace MultiplayerModels
 
     struct PLAYFABCPP_API FCancelMatchmakingTicketRequest : public PlayFab::FPlayFabCppRequestCommon
     {
-        // The Id of the queue to join.
+        // The name of the queue the ticket is in.
         FString QueueName;
 
         // The Id of the ticket to find a match for.
@@ -1882,6 +1882,9 @@ namespace MultiplayerModels
         // Maximum number of players in a match.
         uint32 MaxMatchSize;
 
+        // [optional] Maximum number of players in a ticket.
+        Boxed<uint32> MaxTicketSize;
+
         // Minimum number of players in a match.
         uint32 MinMatchSize;
 
@@ -1902,6 +1905,7 @@ namespace MultiplayerModels
             FPlayFabCppBaseModel(),
             BuildId(),
             MaxMatchSize(0),
+            MaxTicketSize(),
             MinMatchSize(0),
             Name(),
             Rules(),
@@ -1914,6 +1918,7 @@ namespace MultiplayerModels
             FPlayFabCppBaseModel(),
             BuildId(src.BuildId),
             MaxMatchSize(src.MaxMatchSize),
+            MaxTicketSize(src.MaxTicketSize),
             MinMatchSize(src.MinMatchSize),
             Name(src.Name),
             Rules(src.Rules),
@@ -1967,7 +1972,7 @@ namespace MultiplayerModels
          */
         bool EscapeObject;
 
-        // The Id of the queue to find a match for.
+        // The name of the queue to find a match for.
         FString QueueName;
 
         // The Id of the ticket to find a match for.
@@ -2081,7 +2086,7 @@ namespace MultiplayerModels
         // The Id of a match.
         FString MatchId;
 
-        // The Id of the queue to join.
+        // The name of the queue to join.
         FString QueueName;
 
         // Determines whether the matchmaking attributes for each user should be returned in the response for match request.
@@ -2125,7 +2130,7 @@ namespace MultiplayerModels
         // The entity key of the matchmaking user.
         FEntityKey Entity;
 
-        // [optional] The Id of the team the User has been assigned to by matchmaking.
+        // [optional] The Id of the team the User is assigned to.
         FString TeamId;
 
         FMatchmakingPlayerWithTeamAssignment() :
@@ -2155,21 +2160,26 @@ namespace MultiplayerModels
 
     struct PLAYFABCPP_API FServerDetails : public PlayFab::FPlayFabCppBaseModel
     {
-        // The IPv4 address of the virtual machine that is hosting this multiplayer server.
+        // [optional] The IPv4 address of the virtual machine that is hosting this multiplayer server.
         FString IPV4Address;
 
-        // The ports the multiplayer server uses.
+        // [optional] The ports the multiplayer server uses.
         TArray<FPort> Ports;
+        // [optional] The server's region.
+        FString Region;
+
         FServerDetails() :
             FPlayFabCppBaseModel(),
             IPV4Address(),
-            Ports()
+            Ports(),
+            Region()
             {}
 
         FServerDetails(const FServerDetails& src) :
             FPlayFabCppBaseModel(),
             IPV4Address(src.IPV4Address),
-            Ports(src.Ports)
+            Ports(src.Ports),
+            Region(src.Region)
             {}
 
         FServerDetails(const TSharedPtr<FJsonObject>& obj) : FServerDetails()
@@ -2550,7 +2560,7 @@ namespace MultiplayerModels
         // The User who wants to join the ticket. Their Id must be listed in PlayFabIdsToMatchWith.
         FMatchmakingPlayer Member;
 
-        // The Id of the queue to join.
+        // The name of the queue to join.
         FString QueueName;
 
         // The Id of the ticket to find a match for.
@@ -2968,7 +2978,7 @@ namespace MultiplayerModels
         // [optional] The entity key for which to find the ticket Ids.
         TSharedPtr<FEntityKey> Entity;
 
-        // The Id of the queue to find a match for.
+        // The name of the queue to find a match for.
         FString QueueName;
 
         FListMatchmakingTicketsForPlayerRequest() :

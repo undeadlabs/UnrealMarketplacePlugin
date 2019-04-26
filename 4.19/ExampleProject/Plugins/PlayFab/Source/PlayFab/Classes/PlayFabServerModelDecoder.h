@@ -36,6 +36,10 @@ public:
     // Account Management
     //////////////////////////////////////////////////////
 
+    /** Decode the EmptyResult response object*/
+    UFUNCTION(BlueprintCallable, Category = "PlayFab | Server | Account Management Models")
+        static FServerEmptyResult decodeEmptyResultResponse(UPlayFabJsonObject* response);
+
     /** Decode the BanUsersResult response object*/
     UFUNCTION(BlueprintCallable, Category = "PlayFab | Server | Account Management Models")
         static FServerBanUsersResult decodeBanUsersResultResponse(UPlayFabJsonObject* response);
@@ -55,6 +59,10 @@ public:
     /** Decode the GetPlayFabIDsFromFacebookInstantGamesIdsResult response object*/
     UFUNCTION(BlueprintCallable, Category = "PlayFab | Server | Account Management Models")
         static FServerGetPlayFabIDsFromFacebookInstantGamesIdsResult decodeGetPlayFabIDsFromFacebookInstantGamesIdsResultResponse(UPlayFabJsonObject* response);
+
+    /** Decode the GetPlayFabIDsFromGenericIDsResult response object*/
+    UFUNCTION(BlueprintCallable, Category = "PlayFab | Server | Account Management Models")
+        static FServerGetPlayFabIDsFromGenericIDsResult decodeGetPlayFabIDsFromGenericIDsResultResponse(UPlayFabJsonObject* response);
 
     /** Decode the GetPlayFabIDsFromNintendoSwitchDeviceIdsResult response object*/
     UFUNCTION(BlueprintCallable, Category = "PlayFab | Server | Account Management Models")

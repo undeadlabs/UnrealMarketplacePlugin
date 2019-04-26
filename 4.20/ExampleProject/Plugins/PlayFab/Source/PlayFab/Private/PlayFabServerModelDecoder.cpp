@@ -21,6 +21,15 @@
 // Account Management
 //////////////////////////////////////////////////////
 
+FServerEmptyResult UPlayFabServerModelDecoder::decodeEmptyResultResponse(UPlayFabJsonObject* response)
+{
+    // Temp ustruct
+    FServerEmptyResult tempStruct;
+
+
+    return tempStruct;
+}
+
 FServerBanUsersResult UPlayFabServerModelDecoder::decodeBanUsersResultResponse(UPlayFabJsonObject* response)
 {
     // Temp ustruct
@@ -67,6 +76,17 @@ FServerGetPlayFabIDsFromFacebookInstantGamesIdsResult UPlayFabServerModelDecoder
 {
     // Temp ustruct
     FServerGetPlayFabIDsFromFacebookInstantGamesIdsResult tempStruct;
+    UPlayFabJsonObject* dataObj = !(response->HasField("data")) ? nullptr : response->GetObjectField("data");
+
+    tempStruct.Data = !(dataObj->HasField("Data")) ? TArray<UPlayFabJsonObject*>() : dataObj->GetObjectArrayField("Data");
+
+    return tempStruct;
+}
+
+FServerGetPlayFabIDsFromGenericIDsResult UPlayFabServerModelDecoder::decodeGetPlayFabIDsFromGenericIDsResultResponse(UPlayFabJsonObject* response)
+{
+    // Temp ustruct
+    FServerGetPlayFabIDsFromGenericIDsResult tempStruct;
     UPlayFabJsonObject* dataObj = !(response->HasField("data")) ? nullptr : response->GetObjectField("data");
 
     tempStruct.Data = !(dataObj->HasField("Data")) ? TArray<UPlayFabJsonObject*>() : dataObj->GetObjectArrayField("Data");

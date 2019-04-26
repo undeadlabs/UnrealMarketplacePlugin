@@ -218,6 +218,79 @@ bool PlayFab::ServerModels::FAddFriendRequest::readFromValue(const TSharedPtr<FJ
     return HasSucceeded;
 }
 
+PlayFab::ServerModels::FGenericServiceId::~FGenericServiceId()
+{
+
+}
+
+void PlayFab::ServerModels::FGenericServiceId::writeJSON(JsonWriter& writer) const
+{
+    writer->WriteObjectStart();
+
+    writer->WriteIdentifierPrefix(TEXT("ServiceName")); writer->WriteValue(ServiceName);
+
+    writer->WriteIdentifierPrefix(TEXT("UserId")); writer->WriteValue(UserId);
+
+    writer->WriteObjectEnd();
+}
+
+bool PlayFab::ServerModels::FGenericServiceId::readFromValue(const TSharedPtr<FJsonObject>& obj)
+{
+    bool HasSucceeded = true;
+
+    const TSharedPtr<FJsonValue> ServiceNameValue = obj->TryGetField(TEXT("ServiceName"));
+    if (ServiceNameValue.IsValid() && !ServiceNameValue->IsNull())
+    {
+        FString TmpValue;
+        if (ServiceNameValue->TryGetString(TmpValue)) { ServiceName = TmpValue; }
+    }
+
+    const TSharedPtr<FJsonValue> UserIdValue = obj->TryGetField(TEXT("UserId"));
+    if (UserIdValue.IsValid() && !UserIdValue->IsNull())
+    {
+        FString TmpValue;
+        if (UserIdValue->TryGetString(TmpValue)) { UserId = TmpValue; }
+    }
+
+    return HasSucceeded;
+}
+
+PlayFab::ServerModels::FAddGenericIDRequest::~FAddGenericIDRequest()
+{
+
+}
+
+void PlayFab::ServerModels::FAddGenericIDRequest::writeJSON(JsonWriter& writer) const
+{
+    writer->WriteObjectStart();
+
+    writer->WriteIdentifierPrefix(TEXT("GenericId")); GenericId.writeJSON(writer);
+
+    writer->WriteIdentifierPrefix(TEXT("PlayFabId")); writer->WriteValue(PlayFabId);
+
+    writer->WriteObjectEnd();
+}
+
+bool PlayFab::ServerModels::FAddGenericIDRequest::readFromValue(const TSharedPtr<FJsonObject>& obj)
+{
+    bool HasSucceeded = true;
+
+    const TSharedPtr<FJsonValue> GenericIdValue = obj->TryGetField(TEXT("GenericId"));
+    if (GenericIdValue.IsValid() && !GenericIdValue->IsNull())
+    {
+        GenericId = FGenericServiceId(GenericIdValue->AsObject());
+    }
+
+    const TSharedPtr<FJsonValue> PlayFabIdValue = obj->TryGetField(TEXT("PlayFabId"));
+    if (PlayFabIdValue.IsValid() && !PlayFabIdValue->IsNull())
+    {
+        FString TmpValue;
+        if (PlayFabIdValue->TryGetString(TmpValue)) { PlayFabId = TmpValue; }
+    }
+
+    return HasSucceeded;
+}
+
 PlayFab::ServerModels::FAddPlayerTagRequest::~FAddPlayerTagRequest()
 {
 
@@ -4013,6 +4086,25 @@ bool PlayFab::ServerModels::FEmptyResponse::readFromValue(const TSharedPtr<FJson
     return HasSucceeded;
 }
 
+PlayFab::ServerModels::FEmptyResult::~FEmptyResult()
+{
+
+}
+
+void PlayFab::ServerModels::FEmptyResult::writeJSON(JsonWriter& writer) const
+{
+    writer->WriteObjectStart();
+
+    writer->WriteObjectEnd();
+}
+
+bool PlayFab::ServerModels::FEmptyResult::readFromValue(const TSharedPtr<FJsonObject>& obj)
+{
+    bool HasSucceeded = true;
+
+    return HasSucceeded;
+}
+
 PlayFab::ServerModels::FEntityTokenResponse::~FEntityTokenResponse()
 {
     //if (Entity != nullptr) delete Entity;
@@ -5408,6 +5500,43 @@ ServerModels::GameInstanceState PlayFab::ServerModels::readGameInstanceStateFrom
     }
 
     return GameInstanceStateOpen; // Basically critical fail
+}
+
+PlayFab::ServerModels::FGenericPlayFabIdPair::~FGenericPlayFabIdPair()
+{
+    //if (GenericId != nullptr) delete GenericId;
+
+}
+
+void PlayFab::ServerModels::FGenericPlayFabIdPair::writeJSON(JsonWriter& writer) const
+{
+    writer->WriteObjectStart();
+
+    if (GenericId.IsValid()) { writer->WriteIdentifierPrefix(TEXT("GenericId")); GenericId->writeJSON(writer); }
+
+    if (PlayFabId.IsEmpty() == false) { writer->WriteIdentifierPrefix(TEXT("PlayFabId")); writer->WriteValue(PlayFabId); }
+
+    writer->WriteObjectEnd();
+}
+
+bool PlayFab::ServerModels::FGenericPlayFabIdPair::readFromValue(const TSharedPtr<FJsonObject>& obj)
+{
+    bool HasSucceeded = true;
+
+    const TSharedPtr<FJsonValue> GenericIdValue = obj->TryGetField(TEXT("GenericId"));
+    if (GenericIdValue.IsValid() && !GenericIdValue->IsNull())
+    {
+        GenericId = MakeShareable(new FGenericServiceId(GenericIdValue->AsObject()));
+    }
+
+    const TSharedPtr<FJsonValue> PlayFabIdValue = obj->TryGetField(TEXT("PlayFabId"));
+    if (PlayFabIdValue.IsValid() && !PlayFabIdValue->IsNull())
+    {
+        FString TmpValue;
+        if (PlayFabIdValue->TryGetString(TmpValue)) { PlayFabId = TmpValue; }
+    }
+
+    return HasSucceeded;
 }
 
 PlayFab::ServerModels::FGetAllSegmentsRequest::~FGetAllSegmentsRequest()
@@ -8763,6 +8892,75 @@ bool PlayFab::ServerModels::FGetPlayFabIDsFromFacebookInstantGamesIdsResult::rea
     return HasSucceeded;
 }
 
+PlayFab::ServerModels::FGetPlayFabIDsFromGenericIDsRequest::~FGetPlayFabIDsFromGenericIDsRequest()
+{
+
+}
+
+void PlayFab::ServerModels::FGetPlayFabIDsFromGenericIDsRequest::writeJSON(JsonWriter& writer) const
+{
+    writer->WriteObjectStart();
+
+    writer->WriteArrayStart(TEXT("GenericIDs"));
+    for (const FGenericServiceId& item : GenericIDs)
+        item.writeJSON(writer);
+    writer->WriteArrayEnd();
+
+
+    writer->WriteObjectEnd();
+}
+
+bool PlayFab::ServerModels::FGetPlayFabIDsFromGenericIDsRequest::readFromValue(const TSharedPtr<FJsonObject>& obj)
+{
+    bool HasSucceeded = true;
+
+    const TArray<TSharedPtr<FJsonValue>>&GenericIDsArray = FPlayFabJsonHelpers::ReadArray(obj, TEXT("GenericIDs"));
+    for (int32 Idx = 0; Idx < GenericIDsArray.Num(); Idx++)
+    {
+        TSharedPtr<FJsonValue> CurrentItem = GenericIDsArray[Idx];
+        GenericIDs.Add(FGenericServiceId(CurrentItem->AsObject()));
+    }
+
+
+    return HasSucceeded;
+}
+
+PlayFab::ServerModels::FGetPlayFabIDsFromGenericIDsResult::~FGetPlayFabIDsFromGenericIDsResult()
+{
+
+}
+
+void PlayFab::ServerModels::FGetPlayFabIDsFromGenericIDsResult::writeJSON(JsonWriter& writer) const
+{
+    writer->WriteObjectStart();
+
+    if (Data.Num() != 0)
+    {
+        writer->WriteArrayStart(TEXT("Data"));
+        for (const FGenericPlayFabIdPair& item : Data)
+            item.writeJSON(writer);
+        writer->WriteArrayEnd();
+    }
+
+
+    writer->WriteObjectEnd();
+}
+
+bool PlayFab::ServerModels::FGetPlayFabIDsFromGenericIDsResult::readFromValue(const TSharedPtr<FJsonObject>& obj)
+{
+    bool HasSucceeded = true;
+
+    const TArray<TSharedPtr<FJsonValue>>&DataArray = FPlayFabJsonHelpers::ReadArray(obj, TEXT("Data"));
+    for (int32 Idx = 0; Idx < DataArray.Num(); Idx++)
+    {
+        TSharedPtr<FJsonValue> CurrentItem = DataArray[Idx];
+        Data.Add(FGenericPlayFabIdPair(CurrentItem->AsObject()));
+    }
+
+
+    return HasSucceeded;
+}
+
 PlayFab::ServerModels::FGetPlayFabIDsFromNintendoSwitchDeviceIdsRequest::~FGetPlayFabIDsFromNintendoSwitchDeviceIdsRequest()
 {
 
@@ -12097,6 +12295,42 @@ bool PlayFab::ServerModels::FRemoveFriendRequest::readFromValue(const TSharedPtr
     {
         FString TmpValue;
         if (FriendPlayFabIdValue->TryGetString(TmpValue)) { FriendPlayFabId = TmpValue; }
+    }
+
+    const TSharedPtr<FJsonValue> PlayFabIdValue = obj->TryGetField(TEXT("PlayFabId"));
+    if (PlayFabIdValue.IsValid() && !PlayFabIdValue->IsNull())
+    {
+        FString TmpValue;
+        if (PlayFabIdValue->TryGetString(TmpValue)) { PlayFabId = TmpValue; }
+    }
+
+    return HasSucceeded;
+}
+
+PlayFab::ServerModels::FRemoveGenericIDRequest::~FRemoveGenericIDRequest()
+{
+
+}
+
+void PlayFab::ServerModels::FRemoveGenericIDRequest::writeJSON(JsonWriter& writer) const
+{
+    writer->WriteObjectStart();
+
+    writer->WriteIdentifierPrefix(TEXT("GenericId")); GenericId.writeJSON(writer);
+
+    writer->WriteIdentifierPrefix(TEXT("PlayFabId")); writer->WriteValue(PlayFabId);
+
+    writer->WriteObjectEnd();
+}
+
+bool PlayFab::ServerModels::FRemoveGenericIDRequest::readFromValue(const TSharedPtr<FJsonObject>& obj)
+{
+    bool HasSucceeded = true;
+
+    const TSharedPtr<FJsonValue> GenericIdValue = obj->TryGetField(TEXT("GenericId"));
+    if (GenericIdValue.IsValid() && !GenericIdValue->IsNull())
+    {
+        GenericId = FGenericServiceId(GenericIdValue->AsObject());
     }
 
     const TSharedPtr<FJsonValue> PlayFabIdValue = obj->TryGetField(TEXT("PlayFabId"));

@@ -30,6 +30,26 @@ class UPlayFabJsonObject;
 // Account Management
 //////////////////////////////////////////////////////
 
+USTRUCT(BlueprintType)
+struct PLAYFAB_API FServerAddGenericIDRequest : public FPlayFabRequestCommon
+{
+    GENERATED_USTRUCT_BODY()
+public:
+    /** Generic service identifier to add to the player account. */
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PlayFab | Server | Account Management Models")
+        UPlayFabJsonObject* GenericId = nullptr;
+    /** PlayFabId of the user to link. */
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PlayFab | Server | Account Management Models")
+        FString PlayFabId;
+};
+
+USTRUCT(BlueprintType)
+struct PLAYFAB_API FServerEmptyResult : public FPlayFabResultCommon
+{
+    GENERATED_USTRUCT_BODY()
+public:
+};
+
 /**
  * The existence of each user will not be verified. When banning by IP or MAC address, multiple players may be affected, so
  * use this feature with caution. Returns information about the new bans.
@@ -155,6 +175,30 @@ struct PLAYFAB_API FServerGetPlayFabIDsFromFacebookInstantGamesIdsResult : publi
     GENERATED_USTRUCT_BODY()
 public:
     /** Mapping of Facebook Instant Games identifiers to PlayFab identifiers. */
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PlayFab | Server | Account Management Models")
+        TArray<UPlayFabJsonObject*> Data;
+};
+
+USTRUCT(BlueprintType)
+struct PLAYFAB_API FServerGetPlayFabIDsFromGenericIDsRequest : public FPlayFabRequestCommon
+{
+    GENERATED_USTRUCT_BODY()
+public:
+    /**
+     * Array of unique generic service identifiers for which the title needs to get PlayFab identifiers. Currently limited to a
+     * maximum of 10 in a single request.
+     */
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PlayFab | Server | Account Management Models")
+        TArray<UPlayFabJsonObject*> GenericIDs;
+};
+
+/** For generic service identifiers which have not been linked to PlayFab accounts, null will be returned. */
+USTRUCT(BlueprintType)
+struct PLAYFAB_API FServerGetPlayFabIDsFromGenericIDsResult : public FPlayFabResultCommon
+{
+    GENERATED_USTRUCT_BODY()
+public:
+    /** Mapping of generic service identifiers to PlayFab identifiers. */
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PlayFab | Server | Account Management Models")
         TArray<UPlayFabJsonObject*> Data;
 };
@@ -341,6 +385,19 @@ struct PLAYFAB_API FServerLinkXboxAccountResult : public FPlayFabResultCommon
 {
     GENERATED_USTRUCT_BODY()
 public:
+};
+
+USTRUCT(BlueprintType)
+struct PLAYFAB_API FServerRemoveGenericIDRequest : public FPlayFabRequestCommon
+{
+    GENERATED_USTRUCT_BODY()
+public:
+    /** Generic service identifier to be removed from the player. */
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PlayFab | Server | Account Management Models")
+        UPlayFabJsonObject* GenericId = nullptr;
+    /** PlayFabId of the user to remove. */
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PlayFab | Server | Account Management Models")
+        FString PlayFabId;
 };
 
 /**
@@ -828,8 +885,8 @@ public:
 
 /**
  * This function performs an additive update of the arbitrary JSON object containing the custom data for the user. In
- * updating the custom data object, keys which already exist in the object will have their values overwritten, while keys
- * with null values will be removed. No other key-value pairs will be changed apart from those specified in the call.
+ * updating the custom data object, keys which already exist in the object will have their values overwritten, keys with
+ * null values will be removed. No other key-value pairs will be changed apart from those specified in the call.
  */
 USTRUCT(BlueprintType)
 struct PLAYFAB_API FServerUpdateCharacterDataRequest : public FPlayFabRequestCommon

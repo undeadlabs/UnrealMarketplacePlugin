@@ -92,6 +92,34 @@ void UPlayFabServerAPI::OnAddFriendResult(FHttpRequestPtr HttpRequest, FHttpResp
     }
 }
 
+bool UPlayFabServerAPI::AddGenericID(
+    ServerModels::FAddGenericIDRequest& request,
+    const FAddGenericIDDelegate& SuccessDelegate,
+    const FPlayFabErrorDelegate& ErrorDelegate)
+{
+    if((request.AuthenticationContext.IsValid() && request.AuthenticationContext->GetDeveloperSecretKey().Len() == 0)
+        || (!request.AuthenticationContext.IsValid() && PlayFabSettings::GetDeveloperSecretKey().Len() == 0)){
+        UE_LOG(LogPlayFabCpp, Error, TEXT("You must first set your PlayFab developerSecretKey to use this function (Unreal Settings Menu, or in C++ code)"));
+    }
+    auto HttpRequest = PlayFabRequestHandler::SendRequest(PlayFabSettings::GetUrl(TEXT("/Server/AddGenericID")), request.toJSONString(), TEXT("X-SecretKey"), !request.AuthenticationContext.IsValid() ? PlayFabSettings::GetDeveloperSecretKey() : request.AuthenticationContext->GetDeveloperSecretKey());
+    HttpRequest->OnProcessRequestComplete().BindRaw(this, &UPlayFabServerAPI::OnAddGenericIDResult, SuccessDelegate, ErrorDelegate);
+    return HttpRequest->ProcessRequest();
+}
+
+void UPlayFabServerAPI::OnAddGenericIDResult(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse, bool bSucceeded, FAddGenericIDDelegate SuccessDelegate, FPlayFabErrorDelegate ErrorDelegate)
+{
+    ServerModels::FEmptyResult outResult;
+    FPlayFabCppError errorResult;
+    if (PlayFabRequestHandler::DecodeRequest(HttpRequest, HttpResponse, bSucceeded, outResult, errorResult))
+    {
+        SuccessDelegate.ExecuteIfBound(outResult);
+    }
+    else
+    {
+        ErrorDelegate.ExecuteIfBound(errorResult);
+    }
+}
+
 bool UPlayFabServerAPI::AddPlayerTag(
     ServerModels::FAddPlayerTagRequest& request,
     const FAddPlayerTagDelegate& SuccessDelegate,
@@ -1192,6 +1220,34 @@ void UPlayFabServerAPI::OnGetPlayFabIDsFromFacebookInstantGamesIdsResult(FHttpRe
     }
 }
 
+bool UPlayFabServerAPI::GetPlayFabIDsFromGenericIDs(
+    ServerModels::FGetPlayFabIDsFromGenericIDsRequest& request,
+    const FGetPlayFabIDsFromGenericIDsDelegate& SuccessDelegate,
+    const FPlayFabErrorDelegate& ErrorDelegate)
+{
+    if((request.AuthenticationContext.IsValid() && request.AuthenticationContext->GetDeveloperSecretKey().Len() == 0)
+        || (!request.AuthenticationContext.IsValid() && PlayFabSettings::GetDeveloperSecretKey().Len() == 0)){
+        UE_LOG(LogPlayFabCpp, Error, TEXT("You must first set your PlayFab developerSecretKey to use this function (Unreal Settings Menu, or in C++ code)"));
+    }
+    auto HttpRequest = PlayFabRequestHandler::SendRequest(PlayFabSettings::GetUrl(TEXT("/Server/GetPlayFabIDsFromGenericIDs")), request.toJSONString(), TEXT("X-SecretKey"), !request.AuthenticationContext.IsValid() ? PlayFabSettings::GetDeveloperSecretKey() : request.AuthenticationContext->GetDeveloperSecretKey());
+    HttpRequest->OnProcessRequestComplete().BindRaw(this, &UPlayFabServerAPI::OnGetPlayFabIDsFromGenericIDsResult, SuccessDelegate, ErrorDelegate);
+    return HttpRequest->ProcessRequest();
+}
+
+void UPlayFabServerAPI::OnGetPlayFabIDsFromGenericIDsResult(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse, bool bSucceeded, FGetPlayFabIDsFromGenericIDsDelegate SuccessDelegate, FPlayFabErrorDelegate ErrorDelegate)
+{
+    ServerModels::FGetPlayFabIDsFromGenericIDsResult outResult;
+    FPlayFabCppError errorResult;
+    if (PlayFabRequestHandler::DecodeRequest(HttpRequest, HttpResponse, bSucceeded, outResult, errorResult))
+    {
+        SuccessDelegate.ExecuteIfBound(outResult);
+    }
+    else
+    {
+        ErrorDelegate.ExecuteIfBound(errorResult);
+    }
+}
+
 bool UPlayFabServerAPI::GetPlayFabIDsFromNintendoSwitchDeviceIds(
     ServerModels::FGetPlayFabIDsFromNintendoSwitchDeviceIdsRequest& request,
     const FGetPlayFabIDsFromNintendoSwitchDeviceIdsDelegate& SuccessDelegate,
@@ -2253,6 +2309,34 @@ bool UPlayFabServerAPI::RemoveFriend(
 void UPlayFabServerAPI::OnRemoveFriendResult(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse, bool bSucceeded, FRemoveFriendDelegate SuccessDelegate, FPlayFabErrorDelegate ErrorDelegate)
 {
     ServerModels::FEmptyResponse outResult;
+    FPlayFabCppError errorResult;
+    if (PlayFabRequestHandler::DecodeRequest(HttpRequest, HttpResponse, bSucceeded, outResult, errorResult))
+    {
+        SuccessDelegate.ExecuteIfBound(outResult);
+    }
+    else
+    {
+        ErrorDelegate.ExecuteIfBound(errorResult);
+    }
+}
+
+bool UPlayFabServerAPI::RemoveGenericID(
+    ServerModels::FRemoveGenericIDRequest& request,
+    const FRemoveGenericIDDelegate& SuccessDelegate,
+    const FPlayFabErrorDelegate& ErrorDelegate)
+{
+    if((request.AuthenticationContext.IsValid() && request.AuthenticationContext->GetDeveloperSecretKey().Len() == 0)
+        || (!request.AuthenticationContext.IsValid() && PlayFabSettings::GetDeveloperSecretKey().Len() == 0)){
+        UE_LOG(LogPlayFabCpp, Error, TEXT("You must first set your PlayFab developerSecretKey to use this function (Unreal Settings Menu, or in C++ code)"));
+    }
+    auto HttpRequest = PlayFabRequestHandler::SendRequest(PlayFabSettings::GetUrl(TEXT("/Server/RemoveGenericID")), request.toJSONString(), TEXT("X-SecretKey"), !request.AuthenticationContext.IsValid() ? PlayFabSettings::GetDeveloperSecretKey() : request.AuthenticationContext->GetDeveloperSecretKey());
+    HttpRequest->OnProcessRequestComplete().BindRaw(this, &UPlayFabServerAPI::OnRemoveGenericIDResult, SuccessDelegate, ErrorDelegate);
+    return HttpRequest->ProcessRequest();
+}
+
+void UPlayFabServerAPI::OnRemoveGenericIDResult(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse, bool bSucceeded, FRemoveGenericIDDelegate SuccessDelegate, FPlayFabErrorDelegate ErrorDelegate)
+{
+    ServerModels::FEmptyResult outResult;
     FPlayFabCppError errorResult;
     if (PlayFabRequestHandler::DecodeRequest(HttpRequest, HttpResponse, bSucceeded, outResult, errorResult))
     {

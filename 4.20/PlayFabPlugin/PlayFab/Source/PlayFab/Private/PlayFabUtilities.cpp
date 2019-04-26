@@ -478,6 +478,8 @@ FString UPlayFabUtilities::getErrorText(int32 code)
     case 1447: returnText = "EntityAPIKeyLimitExceeded"; break;
     case 1448: returnText = "EntityAPIKeyNotFound"; break;
     case 1449: returnText = "EntityAPIKeyOrSecretInvalid"; break;
+    case 1450: returnText = "EconomyServiceUnavailable"; break;
+    case 1451: returnText = "EconomyServiceInternalError"; break;
     case 2001: returnText = "MatchmakingEntityInvalid"; break;
     case 2002: returnText = "MatchmakingPlayerAttributesInvalid"; break;
     case 2016: returnText = "MatchmakingQueueNotFound"; break;
@@ -497,6 +499,8 @@ FString UPlayFabUtilities::getErrorText(int32 code)
     case 2055: returnText = "MatchmakingTicketMembershipLimitExceeded"; break;
     case 2056: returnText = "MatchmakingUnauthorized"; break;
     case 2057: returnText = "MatchmakingQueueLimitExceeded"; break;
+    case 2058: returnText = "MatchmakingRequestTypeMismatch"; break;
+    case 2059: returnText = "MatchmakingBadRequest"; break;
     case 3001: returnText = "TitleConfigNotFound"; break;
     case 3002: returnText = "TitleConfigUpdateConflict"; break;
     case 3003: returnText = "TitleConfigSerializationError"; break;
@@ -510,6 +514,7 @@ FString UPlayFabUtilities::getErrorText(int32 code)
     case 4008: returnText = "CatalogSearchParameterInvalid"; break;
     case 4009: returnText = "CatalogFeatureDisabled"; break;
     case 4010: returnText = "CatalogConfigInvalid"; break;
+    case 4011: returnText = "CatalogUnauthorized"; break;
     case 5000: returnText = "ExportInvalidStatusUpdate"; break;
     case 5001: returnText = "ExportInvalidPrefix"; break;
     case 5002: returnText = "ExportBlobContainerDoesNotExist"; break;

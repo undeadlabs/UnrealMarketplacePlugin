@@ -20,6 +20,7 @@ namespace PlayFab
     public:
         DECLARE_DELEGATE_OneParam(FAddCharacterVirtualCurrencyDelegate, const ServerModels::FModifyCharacterVirtualCurrencyResult&);
         DECLARE_DELEGATE_OneParam(FAddFriendDelegate, const ServerModels::FEmptyResponse&);
+        DECLARE_DELEGATE_OneParam(FAddGenericIDDelegate, const ServerModels::FEmptyResult&);
         DECLARE_DELEGATE_OneParam(FAddPlayerTagDelegate, const ServerModels::FAddPlayerTagResult&);
         DECLARE_DELEGATE_OneParam(FAddSharedGroupMembersDelegate, const ServerModels::FAddSharedGroupMembersResult&);
         DECLARE_DELEGATE_OneParam(FAddUserVirtualCurrencyDelegate, const ServerModels::FModifyUserVirtualCurrencyResult&);
@@ -59,6 +60,7 @@ namespace PlayFab
         DECLARE_DELEGATE_OneParam(FGetPlayerTagsDelegate, const ServerModels::FGetPlayerTagsResult&);
         DECLARE_DELEGATE_OneParam(FGetPlayFabIDsFromFacebookIDsDelegate, const ServerModels::FGetPlayFabIDsFromFacebookIDsResult&);
         DECLARE_DELEGATE_OneParam(FGetPlayFabIDsFromFacebookInstantGamesIdsDelegate, const ServerModels::FGetPlayFabIDsFromFacebookInstantGamesIdsResult&);
+        DECLARE_DELEGATE_OneParam(FGetPlayFabIDsFromGenericIDsDelegate, const ServerModels::FGetPlayFabIDsFromGenericIDsResult&);
         DECLARE_DELEGATE_OneParam(FGetPlayFabIDsFromNintendoSwitchDeviceIdsDelegate, const ServerModels::FGetPlayFabIDsFromNintendoSwitchDeviceIdsResult&);
         DECLARE_DELEGATE_OneParam(FGetPlayFabIDsFromPSNAccountIDsDelegate, const ServerModels::FGetPlayFabIDsFromPSNAccountIDsResult&);
         DECLARE_DELEGATE_OneParam(FGetPlayFabIDsFromSteamIDsDelegate, const ServerModels::FGetPlayFabIDsFromSteamIDsResult&);
@@ -97,6 +99,7 @@ namespace PlayFab
         DECLARE_DELEGATE_OneParam(FRefreshGameServerInstanceHeartbeatDelegate, const ServerModels::FRefreshGameServerInstanceHeartbeatResult&);
         DECLARE_DELEGATE_OneParam(FRegisterGameDelegate, const ServerModels::FRegisterGameResponse&);
         DECLARE_DELEGATE_OneParam(FRemoveFriendDelegate, const ServerModels::FEmptyResponse&);
+        DECLARE_DELEGATE_OneParam(FRemoveGenericIDDelegate, const ServerModels::FEmptyResult&);
         DECLARE_DELEGATE_OneParam(FRemovePlayerTagDelegate, const ServerModels::FRemovePlayerTagResult&);
         DECLARE_DELEGATE_OneParam(FRemoveSharedGroupMembersDelegate, const ServerModels::FRemoveSharedGroupMembersResult&);
         DECLARE_DELEGATE_OneParam(FReportPlayerDelegate, const ServerModels::FReportPlayerServerResult&);
@@ -155,6 +158,12 @@ namespace PlayFab
          * FriendPlayFabId,FriendUsername,FriendEmail, or FriendTitleDisplayName should be initialized.
          */
         bool AddFriend(ServerModels::FAddFriendRequest& request, const FAddFriendDelegate& SuccessDelegate = FAddFriendDelegate(), const FPlayFabErrorDelegate& ErrorDelegate = FPlayFabErrorDelegate());
+        /**
+         * Adds the specified generic service identifier to the player's PlayFab account. This is designed to allow for a PlayFab
+         * ID lookup of any arbitrary service identifier a title wants to add. This identifier should never be used as
+         * authentication credentials, as the intent is that it is easily accessible by other players.
+         */
+        bool AddGenericID(ServerModels::FAddGenericIDRequest& request, const FAddGenericIDDelegate& SuccessDelegate = FAddGenericIDDelegate(), const FPlayFabErrorDelegate& ErrorDelegate = FPlayFabErrorDelegate());
         /**
          * Adds a given tag to a player profile. The tag's namespace is automatically generated based on the source of the tag.
          * This API will trigger a player_tag_added event and add a tag with the given TagName and PlayFabID to the corresponding player profile. TagName can be used for segmentation and it is limited to 256 characters. Also there is a limit on the number of tags a title can have.
@@ -323,6 +332,12 @@ namespace PlayFab
         bool GetPlayFabIDsFromFacebookIDs(ServerModels::FGetPlayFabIDsFromFacebookIDsRequest& request, const FGetPlayFabIDsFromFacebookIDsDelegate& SuccessDelegate = FGetPlayFabIDsFromFacebookIDsDelegate(), const FPlayFabErrorDelegate& ErrorDelegate = FPlayFabErrorDelegate());
         // Retrieves the unique PlayFab identifiers for the given set of Facebook Instant Games identifiers.
         bool GetPlayFabIDsFromFacebookInstantGamesIds(ServerModels::FGetPlayFabIDsFromFacebookInstantGamesIdsRequest& request, const FGetPlayFabIDsFromFacebookInstantGamesIdsDelegate& SuccessDelegate = FGetPlayFabIDsFromFacebookInstantGamesIdsDelegate(), const FPlayFabErrorDelegate& ErrorDelegate = FPlayFabErrorDelegate());
+        /**
+         * Retrieves the unique PlayFab identifiers for the given set of generic service identifiers. A generic identifier is the
+         * service name plus the service-specific ID for the player, as specified by the title when the generic identifier was
+         * added to the player account.
+         */
+        bool GetPlayFabIDsFromGenericIDs(ServerModels::FGetPlayFabIDsFromGenericIDsRequest& request, const FGetPlayFabIDsFromGenericIDsDelegate& SuccessDelegate = FGetPlayFabIDsFromGenericIDsDelegate(), const FPlayFabErrorDelegate& ErrorDelegate = FPlayFabErrorDelegate());
         // Retrieves the unique PlayFab identifiers for the given set of Nintendo Switch Device identifiers.
         bool GetPlayFabIDsFromNintendoSwitchDeviceIds(ServerModels::FGetPlayFabIDsFromNintendoSwitchDeviceIdsRequest& request, const FGetPlayFabIDsFromNintendoSwitchDeviceIdsDelegate& SuccessDelegate = FGetPlayFabIDsFromNintendoSwitchDeviceIdsDelegate(), const FPlayFabErrorDelegate& ErrorDelegate = FPlayFabErrorDelegate());
         // Retrieves the unique PlayFab identifiers for the given set of PlayStation Network identifiers.
@@ -493,6 +508,8 @@ namespace PlayFab
         bool RegisterGame(ServerModels::FRegisterGameRequest& request, const FRegisterGameDelegate& SuccessDelegate = FRegisterGameDelegate(), const FPlayFabErrorDelegate& ErrorDelegate = FPlayFabErrorDelegate());
         // Removes the specified friend from the the user's friend list
         bool RemoveFriend(ServerModels::FRemoveFriendRequest& request, const FRemoveFriendDelegate& SuccessDelegate = FRemoveFriendDelegate(), const FPlayFabErrorDelegate& ErrorDelegate = FPlayFabErrorDelegate());
+        // Removes the specified generic service identifier from the player's PlayFab account.
+        bool RemoveGenericID(ServerModels::FRemoveGenericIDRequest& request, const FRemoveGenericIDDelegate& SuccessDelegate = FRemoveGenericIDDelegate(), const FPlayFabErrorDelegate& ErrorDelegate = FPlayFabErrorDelegate());
         /**
          * Remove a given tag from a player profile. The tag's namespace is automatically generated based on the source of the tag.
          * This API will trigger a player_tag_removed event and remove a tag with the given TagName and PlayFabID from the corresponding player profile. TagName can be used for segmentation and it is limited to 256 characters
@@ -701,6 +718,7 @@ namespace PlayFab
         // ------------ Generated result handlers
         void OnAddCharacterVirtualCurrencyResult(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse, bool bSucceeded, FAddCharacterVirtualCurrencyDelegate SuccessDelegate, FPlayFabErrorDelegate ErrorDelegate);
         void OnAddFriendResult(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse, bool bSucceeded, FAddFriendDelegate SuccessDelegate, FPlayFabErrorDelegate ErrorDelegate);
+        void OnAddGenericIDResult(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse, bool bSucceeded, FAddGenericIDDelegate SuccessDelegate, FPlayFabErrorDelegate ErrorDelegate);
         void OnAddPlayerTagResult(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse, bool bSucceeded, FAddPlayerTagDelegate SuccessDelegate, FPlayFabErrorDelegate ErrorDelegate);
         void OnAddSharedGroupMembersResult(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse, bool bSucceeded, FAddSharedGroupMembersDelegate SuccessDelegate, FPlayFabErrorDelegate ErrorDelegate);
         void OnAddUserVirtualCurrencyResult(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse, bool bSucceeded, FAddUserVirtualCurrencyDelegate SuccessDelegate, FPlayFabErrorDelegate ErrorDelegate);
@@ -740,6 +758,7 @@ namespace PlayFab
         void OnGetPlayerTagsResult(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse, bool bSucceeded, FGetPlayerTagsDelegate SuccessDelegate, FPlayFabErrorDelegate ErrorDelegate);
         void OnGetPlayFabIDsFromFacebookIDsResult(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse, bool bSucceeded, FGetPlayFabIDsFromFacebookIDsDelegate SuccessDelegate, FPlayFabErrorDelegate ErrorDelegate);
         void OnGetPlayFabIDsFromFacebookInstantGamesIdsResult(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse, bool bSucceeded, FGetPlayFabIDsFromFacebookInstantGamesIdsDelegate SuccessDelegate, FPlayFabErrorDelegate ErrorDelegate);
+        void OnGetPlayFabIDsFromGenericIDsResult(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse, bool bSucceeded, FGetPlayFabIDsFromGenericIDsDelegate SuccessDelegate, FPlayFabErrorDelegate ErrorDelegate);
         void OnGetPlayFabIDsFromNintendoSwitchDeviceIdsResult(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse, bool bSucceeded, FGetPlayFabIDsFromNintendoSwitchDeviceIdsDelegate SuccessDelegate, FPlayFabErrorDelegate ErrorDelegate);
         void OnGetPlayFabIDsFromPSNAccountIDsResult(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse, bool bSucceeded, FGetPlayFabIDsFromPSNAccountIDsDelegate SuccessDelegate, FPlayFabErrorDelegate ErrorDelegate);
         void OnGetPlayFabIDsFromSteamIDsResult(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse, bool bSucceeded, FGetPlayFabIDsFromSteamIDsDelegate SuccessDelegate, FPlayFabErrorDelegate ErrorDelegate);
@@ -778,6 +797,7 @@ namespace PlayFab
         void OnRefreshGameServerInstanceHeartbeatResult(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse, bool bSucceeded, FRefreshGameServerInstanceHeartbeatDelegate SuccessDelegate, FPlayFabErrorDelegate ErrorDelegate);
         void OnRegisterGameResult(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse, bool bSucceeded, FRegisterGameDelegate SuccessDelegate, FPlayFabErrorDelegate ErrorDelegate);
         void OnRemoveFriendResult(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse, bool bSucceeded, FRemoveFriendDelegate SuccessDelegate, FPlayFabErrorDelegate ErrorDelegate);
+        void OnRemoveGenericIDResult(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse, bool bSucceeded, FRemoveGenericIDDelegate SuccessDelegate, FPlayFabErrorDelegate ErrorDelegate);
         void OnRemovePlayerTagResult(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse, bool bSucceeded, FRemovePlayerTagDelegate SuccessDelegate, FPlayFabErrorDelegate ErrorDelegate);
         void OnRemoveSharedGroupMembersResult(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse, bool bSucceeded, FRemoveSharedGroupMembersDelegate SuccessDelegate, FPlayFabErrorDelegate ErrorDelegate);
         void OnReportPlayerResult(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse, bool bSucceeded, FReportPlayerDelegate SuccessDelegate, FPlayFabErrorDelegate ErrorDelegate);

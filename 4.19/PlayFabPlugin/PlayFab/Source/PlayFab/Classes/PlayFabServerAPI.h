@@ -59,6 +59,23 @@ public:
     // Account Management
     //////////////////////////////////////////////////////
     // callbacks
+    DECLARE_DYNAMIC_DELEGATE_TwoParams(FDelegateOnSuccessAddGenericID, FServerEmptyResult, result, UObject*, customData);
+
+    /**
+     * Adds the specified generic service identifier to the player's PlayFab account. This is designed to allow for a PlayFab
+     * ID lookup of any arbitrary service identifier a title wants to add. This identifier should never be used as
+     * authentication credentials, as the intent is that it is easily accessible by other players.
+     */
+    UFUNCTION(BlueprintCallable, Category = "PlayFab | Server | Account Management ", meta = (BlueprintInternalUseOnly = "true"))
+        static UPlayFabServerAPI* AddGenericID(FServerAddGenericIDRequest request,
+            FDelegateOnSuccessAddGenericID onSuccess,
+            FDelegateOnFailurePlayFabError onFailure, UObject* customData);
+
+    // Implements FOnPlayFabServerRequestCompleted
+    UFUNCTION(BlueprintCallable, Category = "PlayFab | Server | Account Management ", meta = (BlueprintInternalUseOnly = "true"))
+        void HelperAddGenericID(FPlayFabBaseModel response, UObject* customData, bool successful);
+
+    // callbacks
     DECLARE_DYNAMIC_DELEGATE_TwoParams(FDelegateOnSuccessBanUsers, FServerBanUsersResult, result, UObject*, customData);
 
     /** Bans users by PlayFab ID with optional IP address, or MAC address for the provided game. */
@@ -122,6 +139,23 @@ public:
     // Implements FOnPlayFabServerRequestCompleted
     UFUNCTION(BlueprintCallable, Category = "PlayFab | Server | Account Management ", meta = (BlueprintInternalUseOnly = "true"))
         void HelperGetPlayFabIDsFromFacebookInstantGamesIds(FPlayFabBaseModel response, UObject* customData, bool successful);
+
+    // callbacks
+    DECLARE_DYNAMIC_DELEGATE_TwoParams(FDelegateOnSuccessGetPlayFabIDsFromGenericIDs, FServerGetPlayFabIDsFromGenericIDsResult, result, UObject*, customData);
+
+    /**
+     * Retrieves the unique PlayFab identifiers for the given set of generic service identifiers. A generic identifier is the
+     * service name plus the service-specific ID for the player, as specified by the title when the generic identifier was
+     * added to the player account.
+     */
+    UFUNCTION(BlueprintCallable, Category = "PlayFab | Server | Account Management ", meta = (BlueprintInternalUseOnly = "true"))
+        static UPlayFabServerAPI* GetPlayFabIDsFromGenericIDs(FServerGetPlayFabIDsFromGenericIDsRequest request,
+            FDelegateOnSuccessGetPlayFabIDsFromGenericIDs onSuccess,
+            FDelegateOnFailurePlayFabError onFailure, UObject* customData);
+
+    // Implements FOnPlayFabServerRequestCompleted
+    UFUNCTION(BlueprintCallable, Category = "PlayFab | Server | Account Management ", meta = (BlueprintInternalUseOnly = "true"))
+        void HelperGetPlayFabIDsFromGenericIDs(FPlayFabBaseModel response, UObject* customData, bool successful);
 
     // callbacks
     DECLARE_DYNAMIC_DELEGATE_TwoParams(FDelegateOnSuccessGetPlayFabIDsFromNintendoSwitchDeviceIds, FServerGetPlayFabIDsFromNintendoSwitchDeviceIdsResult, result, UObject*, customData);
@@ -229,6 +263,19 @@ public:
     // Implements FOnPlayFabServerRequestCompleted
     UFUNCTION(BlueprintCallable, Category = "PlayFab | Server | Account Management ", meta = (BlueprintInternalUseOnly = "true"))
         void HelperLinkXboxAccount(FPlayFabBaseModel response, UObject* customData, bool successful);
+
+    // callbacks
+    DECLARE_DYNAMIC_DELEGATE_TwoParams(FDelegateOnSuccessRemoveGenericID, FServerEmptyResult, result, UObject*, customData);
+
+    /** Removes the specified generic service identifier from the player's PlayFab account. */
+    UFUNCTION(BlueprintCallable, Category = "PlayFab | Server | Account Management ", meta = (BlueprintInternalUseOnly = "true"))
+        static UPlayFabServerAPI* RemoveGenericID(FServerRemoveGenericIDRequest request,
+            FDelegateOnSuccessRemoveGenericID onSuccess,
+            FDelegateOnFailurePlayFabError onFailure, UObject* customData);
+
+    // Implements FOnPlayFabServerRequestCompleted
+    UFUNCTION(BlueprintCallable, Category = "PlayFab | Server | Account Management ", meta = (BlueprintInternalUseOnly = "true"))
+        void HelperRemoveGenericID(FPlayFabBaseModel response, UObject* customData, bool successful);
 
     // callbacks
     DECLARE_DYNAMIC_DELEGATE_TwoParams(FDelegateOnSuccessRevokeAllBansForUser, FServerRevokeAllBansForUserResult, result, UObject*, customData);
@@ -1797,11 +1844,13 @@ public:
     UObject* mCustomData;
 
     FDelegateOnFailurePlayFabError OnFailure;
+    FDelegateOnSuccessAddGenericID OnSuccessAddGenericID;
     FDelegateOnSuccessBanUsers OnSuccessBanUsers;
     FDelegateOnSuccessDeletePlayer OnSuccessDeletePlayer;
     FDelegateOnSuccessGetPlayerProfile OnSuccessGetPlayerProfile;
     FDelegateOnSuccessGetPlayFabIDsFromFacebookIDs OnSuccessGetPlayFabIDsFromFacebookIDs;
     FDelegateOnSuccessGetPlayFabIDsFromFacebookInstantGamesIds OnSuccessGetPlayFabIDsFromFacebookInstantGamesIds;
+    FDelegateOnSuccessGetPlayFabIDsFromGenericIDs OnSuccessGetPlayFabIDsFromGenericIDs;
     FDelegateOnSuccessGetPlayFabIDsFromNintendoSwitchDeviceIds OnSuccessGetPlayFabIDsFromNintendoSwitchDeviceIds;
     FDelegateOnSuccessGetPlayFabIDsFromPSNAccountIDs OnSuccessGetPlayFabIDsFromPSNAccountIDs;
     FDelegateOnSuccessGetPlayFabIDsFromSteamIDs OnSuccessGetPlayFabIDsFromSteamIDs;
@@ -1810,6 +1859,7 @@ public:
     FDelegateOnSuccessGetUserAccountInfo OnSuccessGetUserAccountInfo;
     FDelegateOnSuccessGetUserBans OnSuccessGetUserBans;
     FDelegateOnSuccessLinkXboxAccount OnSuccessLinkXboxAccount;
+    FDelegateOnSuccessRemoveGenericID OnSuccessRemoveGenericID;
     FDelegateOnSuccessRevokeAllBansForUser OnSuccessRevokeAllBansForUser;
     FDelegateOnSuccessRevokeBans OnSuccessRevokeBans;
     FDelegateOnSuccessSendCustomAccountRecoveryEmail OnSuccessSendCustomAccountRecoveryEmail;

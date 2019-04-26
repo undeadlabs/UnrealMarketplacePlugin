@@ -2753,6 +2753,8 @@ void PlayFab::MultiplayerModels::FMatchmakingQueueConfig::writeJSON(JsonWriter& 
 
     writer->WriteIdentifierPrefix(TEXT("MaxMatchSize")); writer->WriteValue(static_cast<int64>(MaxMatchSize));
 
+    if (MaxTicketSize.notNull()) { writer->WriteIdentifierPrefix(TEXT("MaxTicketSize")); writer->WriteValue(static_cast<int64>(MaxTicketSize)); }
+
     writer->WriteIdentifierPrefix(TEXT("MinMatchSize")); writer->WriteValue(static_cast<int64>(MinMatchSize));
 
     writer->WriteIdentifierPrefix(TEXT("Name")); writer->WriteValue(Name);
@@ -2798,6 +2800,13 @@ bool PlayFab::MultiplayerModels::FMatchmakingQueueConfig::readFromValue(const TS
     {
         uint32 TmpValue;
         if (MaxMatchSizeValue->TryGetNumber(TmpValue)) { MaxMatchSize = TmpValue; }
+    }
+
+    const TSharedPtr<FJsonValue> MaxTicketSizeValue = obj->TryGetField(TEXT("MaxTicketSize"));
+    if (MaxTicketSizeValue.IsValid() && !MaxTicketSizeValue->IsNull())
+    {
+        uint32 TmpValue;
+        if (MaxTicketSizeValue->TryGetNumber(TmpValue)) { MaxTicketSize = TmpValue; }
     }
 
     const TSharedPtr<FJsonValue> MinMatchSizeValue = obj->TryGetField(TEXT("MinMatchSize"));
@@ -3143,13 +3152,18 @@ void PlayFab::MultiplayerModels::FServerDetails::writeJSON(JsonWriter& writer) c
 {
     writer->WriteObjectStart();
 
-    writer->WriteIdentifierPrefix(TEXT("IPV4Address")); writer->WriteValue(IPV4Address);
+    if (IPV4Address.IsEmpty() == false) { writer->WriteIdentifierPrefix(TEXT("IPV4Address")); writer->WriteValue(IPV4Address); }
 
-    writer->WriteArrayStart(TEXT("Ports"));
-    for (const FPort& item : Ports)
-        item.writeJSON(writer);
-    writer->WriteArrayEnd();
+    if (Ports.Num() != 0)
+    {
+        writer->WriteArrayStart(TEXT("Ports"));
+        for (const FPort& item : Ports)
+            item.writeJSON(writer);
+        writer->WriteArrayEnd();
+    }
 
+
+    if (Region.IsEmpty() == false) { writer->WriteIdentifierPrefix(TEXT("Region")); writer->WriteValue(Region); }
 
     writer->WriteObjectEnd();
 }
@@ -3172,6 +3186,13 @@ bool PlayFab::MultiplayerModels::FServerDetails::readFromValue(const TSharedPtr<
         Ports.Add(FPort(CurrentItem->AsObject()));
     }
 
+
+    const TSharedPtr<FJsonValue> RegionValue = obj->TryGetField(TEXT("Region"));
+    if (RegionValue.IsValid() && !RegionValue->IsNull())
+    {
+        FString TmpValue;
+        if (RegionValue->TryGetString(TmpValue)) { Region = TmpValue; }
+    }
 
     return HasSucceeded;
 }
