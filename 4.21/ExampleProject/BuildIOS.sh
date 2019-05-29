@@ -20,7 +20,6 @@ archivePath=Build/"$targetPlatform"
 
 pushd "$uatPath"
 # The actual build command. To adapt depending on the needs.
-#. RunUAT.sh BuildCookRun -clean -rocket -installed -nop4 -nocompile -project="$uprojdir" -cook -stage -archive -archivedirectory="$archivePath" -package -clientconfig=Development -Platform="$targetPlatform" -compressed -CookAll -pak -prereqs -build -utf8output -editorrecompile
 ./RunUAT.sh -ScriptsForProject="$uprojdir" BuildCookRun -nocompile -nocompileeditor -installed -nop4 -project="$uprojdir" -cook -stage -archive -archivedirectory="$PWD/Build" -package -clientconfig=Development -ue4exe=UE4Editor -pak -prereqs -nodebuginfo -targetplatform=IOS -build -utf8output
 
 popd
