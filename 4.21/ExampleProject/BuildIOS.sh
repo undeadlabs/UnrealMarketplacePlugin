@@ -1,6 +1,16 @@
 #!/bin/bash
 echo ========== BUILDING MAC ==========
 
+Usage="./BuildAndRunTestsIOS.sh <target ipa directory path> <path to project>"
+
+archivePath=$1
+projectPath=$2
+
+if [ "$#" -ne 2 ]; then
+    echo $usage
+    exit 1
+fi
+ 
 # Unreal Path, to change depending on your workspace setup.
 uePath="/Users/Shared/Epic Games"
 
@@ -15,11 +25,9 @@ targetPlatform=iOS
 
 uprojdir="$PWD/ExampleProject.uproject"
 
-# Destination Path, where the build will end up (relative to active directory).
-archivePath=Build/"$targetPlatform"
 
 pushd "$uatPath"
 # The actual build command. To adapt depending on the needs.
-./RunUAT.sh -ScriptsForProject="$uprojdir" BuildCookRun -nocompile -nocompileeditor -installed -nop4 -project="$uprojdir" -cook -stage -archive -archivedirectory="$PWD/Build" -package -clientconfig=Development -ue4exe=UE4Editor -pak -prereqs -nodebuginfo -targetplatform=IOS -build -utf8output
+./RunUAT.sh -ScriptsForProject="$uprojdir" BuildCookRun -nocompile -editorrecompile -installed -nop4 -project="$uprojdir" -cook -stage -archive -archivedirectory="$archivePath" -package -clientconfig=Development -ue4exe=UE4Editor -pak -prereqs -nodebuginfo -targetplatform=IOS -build -utf8output
 
 popd
