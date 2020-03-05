@@ -9,7 +9,7 @@ DoWork() {
     projectPath=$PWD
     scriptsForProject="${projectPath}/ExampleProject.uproject"
     uePath="/Users/Shared/Epic Games"
-    ueVersion="4.24"
+    ueVersion="4.21"
     uatPath="${uePath}/UE_${ueVersion}/Engine/Build/BatchFiles/"
     cd "$uatPath"
 
