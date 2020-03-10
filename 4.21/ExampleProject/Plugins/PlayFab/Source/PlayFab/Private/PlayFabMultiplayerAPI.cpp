@@ -1788,11 +1788,6 @@ UPlayFabMultiplayerAPI* UPlayFabMultiplayerAPI::GetMultiplayerServerLogs(FMultip
 
 
     // Serialize all the request properties to json
-    if (request.Region.IsEmpty() || request.Region == "") {
-        OutRestJsonObj->SetFieldNull(TEXT("Region"));
-    } else {
-        OutRestJsonObj->SetStringField(TEXT("Region"), request.Region);
-    }
     if (request.ServerId.IsEmpty() || request.ServerId == "") {
         OutRestJsonObj->SetFieldNull(TEXT("ServerId"));
     } else {

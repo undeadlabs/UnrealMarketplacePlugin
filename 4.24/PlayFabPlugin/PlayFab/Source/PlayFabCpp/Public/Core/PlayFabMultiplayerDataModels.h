@@ -2627,21 +2627,16 @@ namespace MultiplayerModels
 
     struct PLAYFABCPP_API FGetMultiplayerServerLogsRequest : public PlayFab::FPlayFabCppRequestCommon
     {
-        // [optional] The region of the multiplayer server to get logs for.
-        FString Region;
-
         // The server ID of multiplayer server to get logs for.
         FString ServerId;
 
         FGetMultiplayerServerLogsRequest() :
             FPlayFabCppRequestCommon(),
-            Region(),
             ServerId()
             {}
 
         FGetMultiplayerServerLogsRequest(const FGetMultiplayerServerLogsRequest& src) :
             FPlayFabCppRequestCommon(),
-            Region(src.Region),
             ServerId(src.ServerId)
             {}
 

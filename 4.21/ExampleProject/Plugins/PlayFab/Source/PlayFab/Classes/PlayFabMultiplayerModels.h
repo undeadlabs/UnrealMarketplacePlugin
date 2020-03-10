@@ -1063,9 +1063,6 @@ struct PLAYFAB_API FMultiplayerGetMultiplayerServerLogsRequest : public FPlayFab
 {
     GENERATED_USTRUCT_BODY()
 public:
-    /** The region of the multiplayer server to get logs for. */
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PlayFab | Multiplayer | MultiplayerServer Models")
-        FString Region;
     /** The server ID of multiplayer server to get logs for. */
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PlayFab | Multiplayer | MultiplayerServer Models")
         FString ServerId;

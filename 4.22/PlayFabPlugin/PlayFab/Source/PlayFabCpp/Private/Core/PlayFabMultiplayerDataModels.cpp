@@ -4601,12 +4601,6 @@ void PlayFab::MultiplayerModels::FGetMultiplayerServerLogsRequest::writeJSON(Jso
 {
     writer->WriteObjectStart();
 
-    if (Region.IsEmpty() == false)
-    {
-        writer->WriteIdentifierPrefix(TEXT("Region"));
-        writer->WriteValue(Region);
-    }
-
     if (!ServerId.IsEmpty() == false)
     {
         UE_LOG(LogTemp, Error, TEXT("This field is required: GetMultiplayerServerLogsRequest::ServerId, PlayFab calls may not work if it remains empty."));
@@ -4623,13 +4617,6 @@ void PlayFab::MultiplayerModels::FGetMultiplayerServerLogsRequest::writeJSON(Jso
 bool PlayFab::MultiplayerModels::FGetMultiplayerServerLogsRequest::readFromValue(const TSharedPtr<FJsonObject>& obj)
 {
     bool HasSucceeded = true;
-
-    const TSharedPtr<FJsonValue> RegionValue = obj->TryGetField(TEXT("Region"));
-    if (RegionValue.IsValid() && !RegionValue->IsNull())
-    {
-        FString TmpValue;
-        if (RegionValue->TryGetString(TmpValue)) { Region = TmpValue; }
-    }
 
     const TSharedPtr<FJsonValue> ServerIdValue = obj->TryGetField(TEXT("ServerId"));
     if (ServerIdValue.IsValid() && !ServerIdValue->IsNull())
